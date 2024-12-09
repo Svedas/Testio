@@ -1,0 +1,98 @@
+included:
+  - Source
+
+disabled_rules:
+  - identifier_name
+  - trailing_whitespace
+  - type_name
+  - file_length
+  - function_body_length
+  - type_body_length
+  - inclusive_language
+  - function_parameter_count
+  - unused_optional_binding
+  - nesting
+  - redundant_objc_attribute # Remove after https://github.com/realm/SwiftLint/issues/4633 is fixed
+  - compiler_protocol_init
+
+opt_in_rules:
+  - array_init
+  - attributes
+  - closure_end_indentation
+  - closure_spacing
+  - collection_alignment
+  - colon
+  - convenience_type
+  - discouraged_object_literal
+  - empty_collection_literal
+  - empty_count
+  - empty_string
+  - enum_case_associated_values_count
+  - fatal_error_message
+  - file_name
+  - first_where
+  - force_unwrapping
+  - indentation_width
+  - last_where
+  - legacy_random
+  - literal_expression_end_indentation
+  - multiline_arguments
+  - multiline_literal_brackets
+  - multiline_parameters
+  - multiline_parameters_brackets
+  - operator_usage_whitespace
+  - overridden_super_call
+  - pattern_matching_keywords
+  - prefer_self_type_over_type_of_self
+  - redundant_nil_coalescing
+  - redundant_type_annotation
+  - sorted_imports
+  - toggle_bool
+  - trailing_closure
+  - unneeded_parentheses_in_closure_argument
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
+  - yoda_condition
+
+line_length:
+  warning: 130
+  error: 200
+  ignores_comments: true
+
+force_cast: warning
+force_try: warning
+
+trailing_semicolon: error
+
+attributes:
+  always_on_same_line:
+    - "@IBSegueAction"
+    - "@IBAction"
+    - "@NSManaged"
+    - "@objc"
+
+multiline_arguments:
+  first_argument_location: next_line
+  only_enforce_after_first_closure_on_first_line: true
+
+private_over_fileprivate:
+  validate_extensions: true
+
+trailing_closure:
+  only_single_muted_parameter: true
+
+cyclomatic_complexity:
+  ignores_case_statements: true
+  
+opening_brace:
+  ignore_multiline_statement_conditions: true
+
+custom_rules:
+  combine_cancellable_set:
+    name: "AnyCancellables as Set"
+    regex: "\\[AnyCancellable\\]"
+    message: "Combine Cancellables must be put in a Set rather than Array."
+    severity: error
+
+analyzer_rules:
+  - unused_import
