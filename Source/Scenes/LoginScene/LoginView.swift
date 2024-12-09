@@ -91,31 +91,36 @@ private extension LoginView {
     }
     
     var loginButtonView: some View {
-        Button {
-            focusedField = nil
-            Task {
-                do {
-                    try await viewModel.login()
-                } catch {
-                    alertError = error as? LoginViewError
-                    showAlert = true
+        ZStack {
+            Button {
+                focusedField = nil
+                Task {
+                    do {
+                        try await viewModel.login()
+                    } catch {
+                        alertError = error as? LoginViewError
+                        showAlert = true
+                    }
                 }
+            } label: {
+                Text(Constant.actionButtonPlaceholder)
+                    .frame(maxWidth: .infinity)
             }
-        } label: {
-            Text(Constant.actionButtonPlaceholder)
-                .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(.borderedProminent)
-        .disabled(viewModel.showProgressView)
-        .alert(isPresented: $showAlert, error: alertError) { _ in
-            Button(Constant.alertButtonText) {
-                showAlert = false
+            .buttonStyle(.borderedProminent)
+            .disabled(viewModel.showProgressView)
+            .alert(isPresented: $showAlert, error: alertError) { _ in
+                Button(Constant.alertButtonText) {
+                    showAlert = false
+                }
+            } message: { error in
+                Text(error.errorDetails)
             }
-        } message: { error in
-            Text(error.errorDetails)
+            .frame(height: Constant.interactiveElementHeight)
+            .rounded()
+            
+            ProgressView()
+                .opacity(viewModel.showProgressView ? 1 : 0)
         }
-        .frame(height: Constant.interactiveElementHeight)
-        .rounded()
     }
 }
 

@@ -34,19 +34,28 @@ final class ServerListViewModel: ObservableObject {
         didRequestLogoutSubject.eraseToAnyPublisher()
     }
     
-    func loadServerData() async {
+    func loadServerData() async throws {
         showProgressView = true
-        await refreshServerData()
-        showProgressView = false
+        
+        defer {
+            showProgressView = false
+        }
+        
+        try await refreshServerData()
     }
     
-    func refreshServerData() async {
+    func refreshServerData() async throws {
         // Fake delay for nicer UX
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         
-        let serversResponse = await fetchServersResponse()
-        persistServers(fromResponse: serversResponse)
-        loadServers()
+        do {
+            let serversResponse = try await fetchServersResponse()
+            persistServers(fromResponse: serversResponse)
+            loadServers()
+        } catch {
+            loadServers()
+            throw ServerListViewError.serverFetchFailed
+        }
     }
     
     func changeSortType(to newSortType: SortType) {
@@ -61,7 +70,7 @@ final class ServerListViewModel: ObservableObject {
 // MARK: - Private functionality
 
 private extension ServerListViewModel {
-    func fetchServersResponse() async -> ServerListResponse {
+    func fetchServersResponse() async throws -> ServerListResponse {
         let restClient = SwinjectUtility.resolve(.restClient)
         
         do {
@@ -75,7 +84,7 @@ private extension ServerListViewModel {
             return response
         } catch {
             debugPrint("Server fetch from API failed", error)
-            return []
+            throw error
         }
     }
     

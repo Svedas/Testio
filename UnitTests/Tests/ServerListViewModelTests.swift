@@ -49,7 +49,7 @@ final class ServerListViewModelTests: TestioTestCase {
             .store(in: &subscriptions)
         
         // Act
-        await sut.loadServerData()
+        try await sut.loadServerData()
         
         // Assert
         XCTAssertEqual(result, expectation)
@@ -66,7 +66,7 @@ final class ServerListViewModelTests: TestioTestCase {
         XCTAssertEqual(sut.sortedServers.count, 0)
         
         // Act
-        await sut.refreshServerData()
+        try await sut.refreshServerData()
         
         // Assert
         XCTAssertEqual(sut.sortedServers.count, 2)
@@ -83,7 +83,7 @@ final class ServerListViewModelTests: TestioTestCase {
         XCTAssertEqual(sut.sortedServers.count, 0)
         
         // Act
-        await sut.refreshServerData()
+        try? await sut.refreshServerData()
         
         // Assert
         XCTAssertEqual(sut.sortedServers.count, 1)
@@ -106,7 +106,7 @@ final class ServerListViewModelTests: TestioTestCase {
         server3.distance = 6154
         
         // Act
-        await sut.loadServerData()
+        try? await sut.loadServerData()
         sut.changeSortType(to: .byDistance)
         
         // Assert
@@ -115,7 +115,7 @@ final class ServerListViewModelTests: TestioTestCase {
         XCTAssertEqual(firstServerByDistance?.distance, Int(server3.distance))
         
         // Act
-        await sut.loadServerData()
+        try? await sut.loadServerData()
         sut.changeSortType(to: .alphabetically)
         
         // Assert

@@ -13,6 +13,7 @@ struct ServerListView: View {
         static let titleText = "Testio."
         static let filterButtonText = "Filter"
         static let logoutButtonText = "Logout"
+        static let alertButtonText = "OK"
         
         static let progressViewText = "Loading list"
         
@@ -24,6 +25,9 @@ struct ServerListView: View {
     }
     
     @StateObject private var viewModel: ServerListViewModel
+    
+    @State private var showAlert = false
+    @State private var alertError: ServerListViewError?
     
     @State private var isPresentingFilters: Bool = false
     
@@ -40,7 +44,19 @@ struct ServerListView: View {
             }
         }
         .task {
-            await viewModel.loadServerData()
+            do {
+                try await viewModel.loadServerData()
+            } catch {
+                alertError = error as? ServerListViewError
+                showAlert = true
+            }
+        }
+        .alert(isPresented: $showAlert, error: alertError) { _ in
+            Button(Constant.alertButtonText) {
+                showAlert = false
+            }
+        } message: { error in
+            Text(error.errorDetails)
         }
     }
 }
@@ -74,7 +90,12 @@ private extension ServerListView {
         .navigationTitle(Constant.titleText)
         .navigationBarTitleDisplayMode(.inline)
         .refreshable {
-            await viewModel.refreshServerData()
+            do {
+                try await viewModel.refreshServerData()
+            } catch {
+                alertError = error as? ServerListViewError
+                showAlert = true
+            }
         }
     }
     
